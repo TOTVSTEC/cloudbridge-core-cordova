@@ -1,0 +1,16 @@
+{
+  "name": "cloudbridge-core-cordova",
+  "version": "0.0.1",
+  "description": "Cloudbridge Cordova-like application",
+  "license": "MIT",
+   "contributors": [
+    {
+      "name": "Daniel Otto Bolognani",
+      "email": "daniel.bolognani@totvs.com.br"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/totvstec/cloudbridge-core-cordova.git"
+  }
+}
