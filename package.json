@@ -9,6 +9,15 @@
       "email": "daniel.bolognani@totvs.com.br"
     }
   ],
+  "license": "MIT",
+  "devDependencies": {
+    "totvstec-tools": "^1.0.6"
+  },
+  "scripts": {
+    "release": "totvstec release",
+    "release:minor": "totvstec release minor",
+    "release:major": "totvstec release major"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/totvstec/cloudbridge-core-cordova.git"
