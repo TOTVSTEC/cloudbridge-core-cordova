@@ -19,7 +19,7 @@ class InstallTask {
 	}
 
 	run() {
-		shelljs.cp('-Rf', path.join(__dirname, 'src'), this.projectDir);
+		shelljs.cp('-Rf', path.join(__dirname, 'www'), this.projectDir);
 
 		return RestoreTask.run(this.cli, this.projectDir, this.projectData);
 

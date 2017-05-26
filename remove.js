@@ -20,7 +20,7 @@ class RemoveTask {
 	}
 
 	run() {
-		var src = path.join(this.projectDir, 'advpl', 'plugins', 'www');
+		var src = path.join(this.projectDir, 'advpl', 'plugins', 'www', 'hooks');
 
 		shelljs.rm('-rf', src);
 

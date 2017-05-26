@@ -20,7 +20,10 @@ class RestoreTask {
 	}
 
 	run() {
+		shelljs.cp('-Rf', path.join(__dirname, 'src'), this.projectDir);
 		shelljs.cp('-Rf', path.join(__dirname, 'build'), this.projectDir);
+		shelljs.cp('-Rf', path.join(__dirname, 'plugins'), this.projectDir);
+
 
 		return Q();
 	}
