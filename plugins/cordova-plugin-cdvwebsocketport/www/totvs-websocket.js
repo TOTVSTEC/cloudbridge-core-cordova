@@ -6,7 +6,6 @@
   }
   
   WebSocketPort.install = function () {
-    console.log("criou objeto");
     if (!window.plugins) {
           window.plugins = {};
             }
