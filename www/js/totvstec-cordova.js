@@ -1,84 +1,72 @@
 
   var wsUri = "ws://localhost:";
-  var output;
+  var onErrorMsg;
   var onRecMsg;
+  var onStatusMsg;
 
-  function setStatusReceiver(div)
-  {
-    output = div;
-  }
+  var WSEnum = {
+    WSADVPLERROR: -200,
+    WSGETPORTERROR: -100,
+    WSGENERROR: -1,
+    WSOK: 0,
+    WSCONNECTED : 1
+  };
 
-  function initWebSockets(onReceiveMsg, StatusDiv)
+  function initWebSockets(onADVPLMsg, onADVPLError, onStatus)
   {
-    onRecMsg = function(evt) { onReceiveMsg(evt); };
-    output = StatusDiv;
+    onRecMsg = function(len, evt) { onADVPLMsg(len, evt); };
+    onErrorMsg = function(code, evt) { onADVPLError(code, evt); };
+    onStatusMsg = function(code, evt) { onStatus(code, evt); };
     window.plugins.websocketport.getPort(initWebSocketsOK, initWebSocketsErr);
-  }
-
-  function initWebSocketsport(websckport, onReceiveMsg, StatusDiv)
-  {
-    onRecMsg = function(evt) { onReceiveMsg(evt); };
-    output = StatusDiv;
-    wsUri = wsUri + websckport.toString();
-    websocket = new WebSocket(wsUri);
-    websocket.onopen = function(evt) { onOpen(evt) };
-    websocket.onclose = function(evt) { onClose(evt) };
-    websocket.onmessage = function(evt) { onMessage(evt) };
-    websocket.onerror = function(evt) { onError(evt) };
   }
 
   function initWebSocketsErr(errorMsg)
   {
-    if (output)
-      output.prepend("WebSocketGetPortError - " + errorMsg);
+    if (onErrorMsg)
+      onErrorMsg(WSEnum.WSGETPORTERROR, errorMsg);
   }
 
   function initWebSocketsOK(websckport)
   {
       wsUri = wsUri + websckport.toString();
       websocket = new WebSocket(wsUri);
-      websocket.onopen = function(evt) { onOpen(evt) };
-      websocket.onclose = function(evt) { onClose(evt) };
-      websocket.onmessage = function(evt) { onMessage(evt) };
-      websocket.onerror = function(evt) { onError(evt) };
+      websocket.onopen = function(evt) { onOpenWS(evt); };
+      websocket.onclose = function(evt) { onCloseWS(evt); };
+      websocket.onmessage = function(evt) { onMessageWS(evt); };
+      websocket.onerror = function(evt) { onErrorWS(evt); };
   }
 
-  function onOpen(evt)
+  function onOpenWS(evt)
   {
-    if (output)
-      output.prepend("<p>WebSocket: Conectado</p>");
+    if (onStatusMsg)
+      onStatusMsg(WSEnum.WSCONNECTED, "WebSocket: Conectado");
   }
 
-  function onClose(evt)
+  function onCloseWS(evt)
   {
-    if (output)
-      output.prepend("<p>WebSocket: Desconectado (Code: " + evt.code + (evt.reason.length > 0 ? " Reason: " + evt.reason : "") + ")</p>");
+    if (onStatusMsg)
+      onStatusMsg(evt.code, evt.reason.length > 0 ? evt.reason : "");
   }
 
-  function onMessage(evt)
+  function onMessageWS(evt)
   {
     // mensagem recebida
     if (evt.data.length >= 12 && evt.data.substring(0,12)=="[ADVPLERROR]")
     {
-      if (output)
-        output.prepend("<p>WebSocket: " + evt.data + "</p>");
+      if (onErrorMsg)
+        onErrorMsg(WSEnum.WSADVPLERROR, evt.data);
     }
     else
     {
       if (onRecMsg)
-        onRecMsg(evt.data);
-      else
-      {
-        if (output)
-          output.prepend("<p>" + evt.data + "</p>");
-      }
+        onRecMsg(evt.length, evt.data);
     }
   }
 
-  function onError(evt)
+  function onErrorWS(evt)
   {
-    if (evt.data && output)
-      output.prepend("<p>WebSocket: " + evt.data + "</p>");
+    if (evt.data && onErrorMsg)
+      onErrorMsg(WSEnum.WSGENERROR, evt.data);
   }
 
   function doSend(message)
