@@ -1,6 +1,6 @@
 {
   "name": "cloudbridge-core-cordova",
-  "version": "0.0.2",
+  "version": "0.0.3-SNAPSHOT",
   "description": "Cloudbridge Cordova-like application",
   "license": "MIT",
   "contributors": [
