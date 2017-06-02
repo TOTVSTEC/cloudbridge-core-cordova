@@ -51,15 +51,16 @@
   function onMessageWS(evt)
   {
     // mensagem recebida
-    if (evt.data.length >= 12 && evt.data.substring(0,12)=="[ADVPLERROR]")
+    var jsonR = JSON.parse(evt.data);
+    if (jsonR.codMessage == "ADVPLERROR") 
     {
-      if (onErrorMsg)
-        onErrorMsg(WSEnum.WSADVPLERROR, evt.data);
+        if (onErrorMsg)
+          onErrorMsg(WSEnum.WSADVPLERROR, jsonR.contentMessage);  
     }
     else
     {
       if (onRecMsg)
-        onRecMsg(evt.length, evt.data);
+        onRecMsg(jsonR.codMessage, jsonR.contentMessage);
     }
   }
 
@@ -72,4 +73,11 @@
   function doSend(message)
   {
     websocket.send(message);
+  }
+
+  function JSONmessage (SCode, SContent)
+  {
+    var jsonobj = { "codMessage": SCode,
+                    "contentMessage": SContent };
+    return JSON.stringify(jsonobj);
   }

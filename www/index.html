@@ -42,9 +42,18 @@
                 <p class="event received">WebSocket is Ready</p>
             </div>
             <br>
+            <button id="btnDate" type="button" onclick="getDate()" class="button" disabled>Retornar data/hora do AppServer</button>
             <div id="data" class="hoje">
             </div>
         </div>
+        <script>
+        function getDate()
+        {
+            //Exemplo de comunicação JS <-> ADVPL
+            //Envio comando para mudar o formato da data e depois para retornar a Data/Hora do sistema
+            doSend( JSONmessage("execADVPL", "SET(4,'dd/mm/yy'),cvaltochar(date()) + ' - ' + cvaltochar(time())") );
+        }
+        </script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/totvstec-cordova.js"></script>

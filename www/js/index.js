@@ -29,7 +29,7 @@ var app = {
     onDeviceReady: function() {
         // inicia a comunicação webSocket, os três parâmetros são 3 funções de callback
         // 1 - Chamado quando recebe uma mensagem pelo websocket 
-        //     A função precisa esperar 2 parâmetros, sendo o primeiro o tamanho do pacote e o segundo a mensagem em si
+        //     A função precisa esperar 2 parâmetros, sendo o primeiro o código da mensagem e o segundo a mensagem em si
         // 2 - Chamado em alguma situação de erro (tanto de websocket como de ADVPL)
         //     A função precisa esperar 2 parâmetros, sendo o primeiro um código de erro e o segundo uma descrição do erro
         // 3 - Chamado para informar que a conexão foi bem sucedida ou foi desconectado
@@ -42,23 +42,24 @@ var app = {
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
+        var btnDate = document.getElementById("btnDate");
 
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
+        btnDate.disabled = false;
 
         console.log('Received Event: ' + id);
-
-        //Exemplo de comunicação ADVPL <-> JS
-        //Envio comando para mudar o formato da data e depois para retornar a Data do sistema
-        doSend("SET(4,'dd/mm/yy'),date()");
     }
 };
 
 // CallBack chamado quando recebe mensagem por WEBSOCKET
-function onReceive(length, msg)
+function onReceive(code, msg)
 {
-    // Exemplo de retorno do ADVPL (neste caso retorna a data do sistema)
-    document.getElementById('data').innerHTML = "<p>" + msg + "</p>";
+    if (code == "returnADVPL")
+    {
+        // Exemplo de retorno do ADVPL (neste caso retorna a data do sistema)
+        document.getElementById('data').innerHTML = "<p>" + msg + "</p>";
+    }
 }
 
 // CallBack chamado devido a algum erro no WEBSOCKET ou ADVPL
