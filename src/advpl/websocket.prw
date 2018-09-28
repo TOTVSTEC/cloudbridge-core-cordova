@@ -2,13 +2,13 @@
 /-------------------------------------------------------------\
 | u_websck() - Exemplo de funcionamento do WebSocket          |
 |-------------------------------------------------------------|
-| Preferencialmente, utilize o código abaixo como base na sua |
-| implementação ADVPL, alterando apenas o trecho dentro do    |
+| Preferencialmente, utilize o codigo abaixo como base na sua |
+| implementacao ADVPL, alterando apenas o trecho dentro do    |
 | begin sequence ---- end sequence.                           |
 |                                                             |
-| Para utilização no projeto Cloudbridge Cordova-like, o nome |
-| da função não deve ser alterado (verificar o appserver.ini  |
-| que define esta função como onstart).                       |
+| Para utilizacao no projeto Cloudbridge Cordova-like, o nome |
+| da funcao nao deve ser alterado (verificar o appserver.ini  |
+| que define esta funcao como onstart).                       |
 |                                                             |
 |-------------------------------------------------------------|
 | Autor - Daniel Otto Bolognani                               |
@@ -17,7 +17,7 @@
 */
 user function websck()
   Local oError, ret, hasSend 
-  
+
   //Cria objeto WEBSOCKET SERVER
   PUBLIC websck := TWEBSOCKET():NEW()
   
@@ -33,7 +33,7 @@ user function websck()
   
   While .T.
   
-    // Espera conexão
+    // Espera conexao
     if websck:nConnected() > 0
       conout("Client Connected " + cvaltochar(websck:nConnected()))
       
@@ -42,7 +42,7 @@ user function websck()
       
         conout("Message Received from " + cvaltochar(nCon) + " - " + txtRecv)
         
-        // Substitui o errorblock com um código para enviar o erro ADVPL por websocket para o cliente
+        // Substitui o errorblock com um codigo para enviar o erro ADVPL por websocket para o cliente
         oError := ErrorBlock({ |e|u_errHandler(e:Description, websck, nCon) })
         
         begin sequence
@@ -72,13 +72,13 @@ user function websck()
             if lRet1 == .T. .AND. lRet2 == .T.
               DO CASE
                 CASE cCode == "execADVPL"
-                  // Pega o texto recebido e transforma em Bloco de código
+                  // Pega o texto recebido e transforma em Bloco de codigo
                   bloco := &("{||" + cContent + "}")
-                  // Executa o bloco de código e salva o retorno na variável ret
+                  // Executa o bloco de codigo e salva o retorno na variavel ret
                   cMsgRet := cvaltochar( eval(bloco) )
                   cCodRet := "returnADVPL"
-                  
-                // Adicionar outros cases aqui quando necessário
+
+                // Adicionar outros cases aqui quando necessario
                     
               ENDCASE
     			    
@@ -92,12 +92,12 @@ user function websck()
     			  
           endif
 
-        end sequence 
+        end sequence
         
-        // Restaura o bloco de código de erro ADVPL padrão
+        // Restaura o bloco de codigo de erro ADVPL padrao
         ErrorBlock := oError
         
-        // Se por algum motivo não conseguiu enviar a resposta, mostra pelo menos um aviso no console
+        // Se por algum motivo nao conseguiu enviar a resposta, mostra pelo menos um aviso no console
         if hasSend != 0
           conout("WebSocket Send error (" + cvaltochar(hasSend) + ")")
         endif
@@ -105,24 +105,20 @@ user function websck()
       endif
     else
       conout("Waiting conection on port " + cvaltochar(websck:getport()))
-      // Nenhum cliente conectado, manda o websocket Server continuar esperando por conexão
+      // Nenhum cliente conectado, manda o websocket Server continuar esperando por conexao
       websck:PingServer(500)
     endif
   enddo
 
 return
 
-// Função para controle de erro
-User function errHandler(sDescr, websck, ncon)
-
-  websck:Send(MountJSON( "ADVPLERROR", sDescr), ncon, 1000 )
-  
-  BREAK
+// Funcao para controle de erro
+user function errHandler(sDescr, websck, ncon)
+	websck:Send(MountJSON( "ADVPLERROR", sDescr), ncon, 1000 )
+	Break
 RETURN 
 
-// Função para montar a mensagem em JSON
+// Monta JSON de resposta
 static function MountJSON(CCode, CContent)
-
-  jsonResult := '{ "codMessage": "' + CCode + '", "contentMessage": "' + CContent + '" }'
-  
+	jsonResult := '{ "codMessage": "' + CCode + '", "contentMessage": "' + CContent + '" }'
 return jsonResult

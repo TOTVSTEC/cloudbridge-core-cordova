@@ -20,10 +20,17 @@ class RestoreTask {
 	}
 
 	run() {
+		var pluginDir = path.join(__dirname, 'plugins', 'cordova-plugin-cdvwebsocketport'),
+			options = {
+				cwd: this.projectDir
+			};
+
 		shelljs.cp('-Rf', path.join(__dirname, 'src'), this.projectDir);
 		shelljs.cp('-Rf', path.join(__dirname, 'build'), this.projectDir);
-		shelljs.cp('-Rf', path.join(__dirname, 'plugins'), this.projectDir);
+		//shelljs.cp('-Rf', path.join(__dirname, 'plugins'), this.projectDir);
 
+		shelljs.exec('cordova plugin add ' + pluginDir, options);
+		shelljs.exec('cordova plugin save', options);
 
 		return Q();
 	}
